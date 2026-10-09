@@ -7,24 +7,24 @@
     "suspicious_total": 280,
     "confusion": {
       "legitimo": {
-        "legitimo": 246,
+        "legitimo": 238,
         "suspeito": 3,
-        "inconclusivo": 151
+        "inconclusivo": 159
       },
       "suspeito": {
         "legitimo": 82,
-        "suspeito": 181,
-        "inconclusivo": 17
+        "suspeito": 180,
+        "inconclusivo": 18
       }
     },
     "false_positives": 3,
     "false_negatives": 82,
-    "inconclusive_on_legit": 151,
-    "inconclusive_on_suspicious": 17,
+    "inconclusive_on_legit": 159,
+    "inconclusive_on_suspicious": 18,
     "easy_legit_total": 160,
     "easy_false_positives": 0,
     "detectable_suspicious_total": 200,
-    "detectable_caught": 181,
+    "detectable_caught": 180,
     "scenarios": [
       {
         "scenario": "legit_steady",
@@ -81,9 +81,9 @@
         "detectable": true,
         "n": 40,
         "predicted": {
-          "legitimo": 34,
+          "legitimo": 26,
           "suspeito": 0,
-          "inconclusivo": 6
+          "inconclusivo": 14
         }
       },
       {
@@ -178,8 +178,8 @@
         "n": 40,
         "predicted": {
           "legitimo": 0,
-          "suspeito": 40,
-          "inconclusivo": 0
+          "suspeito": 39,
+          "inconclusivo": 1
         }
       },
       {
@@ -244,24 +244,24 @@
     "suspicious_total": 280,
     "confusion": {
       "legitimo": {
-        "legitimo": 242,
+        "legitimo": 237,
         "suspeito": 3,
-        "inconclusivo": 155
+        "inconclusivo": 160
       },
       "suspeito": {
         "legitimo": 84,
-        "suspeito": 181,
-        "inconclusivo": 15
+        "suspeito": 179,
+        "inconclusivo": 17
       }
     },
     "false_positives": 3,
     "false_negatives": 84,
-    "inconclusive_on_legit": 155,
-    "inconclusive_on_suspicious": 15,
+    "inconclusive_on_legit": 160,
+    "inconclusive_on_suspicious": 17,
     "easy_legit_total": 160,
     "easy_false_positives": 0,
     "detectable_suspicious_total": 200,
-    "detectable_caught": 181,
+    "detectable_caught": 179,
     "scenarios": [
       {
         "scenario": "legit_steady",
@@ -318,9 +318,9 @@
         "detectable": true,
         "n": 40,
         "predicted": {
-          "legitimo": 33,
+          "legitimo": 28,
           "suspeito": 0,
-          "inconclusivo": 7
+          "inconclusivo": 12
         }
       },
       {
@@ -415,8 +415,8 @@
         "n": 40,
         "predicted": {
           "legitimo": 0,
-          "suspeito": 36,
-          "inconclusivo": 4
+          "suspeito": 34,
+          "inconclusivo": 6
         }
       },
       {

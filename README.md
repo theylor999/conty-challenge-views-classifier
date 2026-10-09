@@ -47,14 +47,14 @@ Resposta: `label`, `reason` (uma ou duas frases com números), `signals` (`id`, 
 | sinal | o que mede | moderado | forte |
 | --- | --- | --- | --- |
 | `spike_shape` | A maior hora vale pelo menos 8× o patamar (mediana das 48 h anteriores), 300 views acima dele e 8 desvios robustos (1,4826·MAD). Se vale, olha a cauda: quantas horas seguidas, depois da fase alta (acima de 50% do excesso), o volume segue acima de 10% do excesso. | cauda de 2 a 4 h | cauda de 0 a 1 h (corte seco) |
-| `mechanical_regularity` | Trecho em que janelas de 12 h têm coeficiente de variação até 3% e média de 50 views/h ou mais. Audiência real tem ruído e ciclo diário. | 12 h seguidas | 24 h seguidas |
+| `mechanical_regularity` | Sequência de janelas de 12 h seguidas, cada uma com coeficiente de variação até 3% e média de 50 views/h ou mais. Dois patamares planos em níveis diferentes não se somam: as janelas que cruzam o degrau reprovam. Audiência real tem ruído e ciclo diário. | 12 h seguidas | 24 h seguidas |
 | `repeated_values` | O mesmo valor exato (20 ou mais) várias horas seguidas. | nunca | 6 h seguidas |
 | `round_numbers` | Horas seguidas em múltiplos exatos de 100 (valor 500 ou mais): entrega em pacotes. Moderado porque há fontes que arredondam. | 6 h seguidas | nunca |
 | `circadian_mismatch` | Mediana das horas 02h–05h dividida pela mediana das 10h–21h no fuso informado. Horas já explicadas por um pico ou por uma queda a zero ficam fora da conta. | razão de 0,8 ou mais | nunca: audiência de outro fuso dá o mesmo padrão |
 | `purge_drop` | Maior queda do acumulado (só em `cumulative`): a plataforma removeu views que contava. | 0,5% | 3% |
 | `drop_to_zero` | O ritmo (mediana das 24 h anteriores, 100/h ou mais) cai em 1 h para 2% ou menos e fica assim por 6 h ou mais. Moderado porque vídeo ocultado ou falha de coleta fazem o mesmo. | sim | nunca |
 
-Um pico orgânico tem cauda: a fase alta termina e o volume desce por muitas horas (cauda de 5 h ou mais). Um pico comprado é um retângulo: volta ao patamar em uma hora. Cauda de 2 a 4 h é o meio do caminho e não basta para acusar. Se restam menos de 3 horas de dados depois da fase alta, ou a série termina com a cauda ainda em curso, o sinal fica `undetermined`: os dados não respondem.
+Um pico orgânico tem cauda: a fase alta termina e o volume desce por muitas horas (cauda de 5 h ou mais). Um pico comprado é um retângulo: volta ao patamar em uma hora. Cauda de 2 a 4 h é o meio do caminho e não basta para acusar. Cauda de 5 h ou mais já descarta o pulso, mesmo que a série acabe antes de o volume voltar ao patamar (o texto então diz "ainda acima do patamar quando a série termina"). Se restam menos de 3 horas de dados depois da fase alta, ou a série termina com uma cauda de 2 a 4 h ainda em curso, o sinal fica `undetermined`: os dados não respondem.
 
 ### Regra de decisão
 
@@ -149,14 +149,15 @@ Conjunto de ajuste: semente 2025, 680 séries (400 legítimas, 280 suspeitas), a
 
 - Falsos positivos: **3 de 400 séries legítimas = 0,8%**.
 - Falsos positivos só nos cenários fáceis: 0 de 160 = 0,0%.
-- Legítimas que o classificador deixou como inconclusivo: 151 de 400 = 37,8%.
+- Legítimas que o classificador deixou como inconclusivo: 159 de 400 = 39,8%.
 - Suspeitas classificadas como legítimo (falso negativo): 82 de 280 = 29,3%.
-- Suspeitas dentro do alcance do critério que foram pegas: 181 de 200 = 90,5%.
+- Suspeitas pegas, contando as fora do alcance: 180 de 280 = 64,3%.
+- Suspeitas dentro do alcance do critério que foram pegas: 180 de 200 = 90,0%.
 
 | verdade \ classificador | legitimo | suspeito | inconclusivo |
 | --- | --- | --- | --- |
-| legitimo | 246 | 3 | 151 |
-| suspeito | 82 | 181 | 17 |
+| legitimo | 238 | 3 | 159 |
+| suspeito | 82 | 180 | 18 |
 
 | cenário | verdade | n | legitimo | suspeito | inconclusivo |
 | --- | --- | --- | --- | --- | --- |
@@ -164,7 +165,7 @@ Conjunto de ajuste: semente 2025, 680 séries (400 legítimas, 280 suspeitas), a
 | `legit_viral` | legitimo | 40 | 40 | 0 | 0 |
 | `legit_weekend` | legitimo | 40 | 40 | 0 | 0 |
 | `legit_sparse` | legitimo | 40 | 33 | 0 | 7 |
-| `legit_cumulative` (difícil) | legitimo | 40 | 34 | 0 | 6 |
+| `legit_cumulative` (difícil) | legitimo | 40 | 26 | 0 | 14 |
 | `legit_night_audience` (difícil) | legitimo | 40 | 0 | 0 | 40 |
 | `legit_unlisted` (difícil) | legitimo | 40 | 7 | 0 | 33 |
 | `legit_rounded_source` (difícil) | legitimo | 40 | 0 | 0 | 40 |
@@ -172,21 +173,22 @@ Conjunto de ajuste: semente 2025, 680 séries (400 legítimas, 280 suspeitas), a
 | `legit_flash_pulse` (difícil) | legitimo | 40 | 16 | 0 | 24 |
 | `bought_pulse` | suspeito | 40 | 0 | 34 | 6 |
 | `night_bot` (difícil) | suspeito | 40 | 2 | 27 | 11 |
-| `bot_drip` | suspeito | 40 | 0 | 40 | 0 |
+| `bot_drip` | suspeito | 40 | 0 | 39 | 1 |
 | `bot_stopped` | suspeito | 40 | 0 | 40 | 0 |
 | `purge_drop` | suspeito | 40 | 0 | 40 | 0 |
 | `bought_disguised_tail` (difícil) (fora do alcance) | suspeito | 40 | 40 | 0 | 0 |
 | `bought_slow_drip` (difícil) (fora do alcance) | suspeito | 40 | 40 | 0 | 0 |
 
-Conjunto de controle: semente 31337, mesma receita, nunca olhado ao ajustar os limites. Falsos positivos: **3 de 400 séries legítimas = 0,8%**; falsos negativos 84 de 280 = 30,0%; suspeitas dentro do alcance pegas 181 de 200 = 90,5%.
+Conjunto de controle: semente 31337, mesma receita, não usada para escolher nenhum limite. Falsos positivos: **3 de 400 séries legítimas = 0,8%**; falsos negativos 84 de 280 = 30,0%; suspeitas dentro do alcance pegas 179 de 200 = 89,5%.
 <!-- metrics:end -->
 
 Leituras honestas dessa tabela:
 
 - O dataset é meu, as 17 receitas são minhas suposições sobre o que é orgânico e o que é comprado. O número mede o critério contra essas suposições, não contra o mundo.
 - A taxa de falso positivo vem só de `legit_large_smooth`: canal grande com ruído de 1% a 4% e pouco ciclo diário, que parece mecânico. Deixei esses casos de propósito e não afrouxei os limites para escondê-los.
-- A prevalência de suspeitas no dataset (41%) é inventada. Como a taxa de FP é calculada só sobre as legítimas, ela não depende disso. O falso negativo e a precisão dependem.
+- A prevalência de suspeitas no dataset (41%) é inventada. As taxas condicionais (falso positivo sobre as legítimas, falso negativo sobre as suspeitas) não dependem dela. Precisão (de tudo que foi acusado, quanto era mesmo suspeito) e contagens absolutas dependem, e por isso não são reportadas.
 - Os falsos negativos altos vêm dos dois cenários marcados "fora do alcance": compra que imita um pico orgânico e compra diluída com ciclo diário. Na lista "dentro do alcance" a taxa de captura é a linha correspondente do bloco.
+- A taxa de inconclusivo entre as legítimas é alta porque eu pus de propósito cinco cenários difíceis em que o certo é se abster (outro fuso, fonte que arredonda, vídeo ocultado, pico curto, ajuste do acumulado). Nos cenários fáceis ela só aparece em `legit_sparse`, séries com menos de 100 views no total.
 - Falta no dataset um pico legítimo de corte seco (link fixado na home de um portal por duas horas). Pela forma ele é igual ao pulso comprado; está em "o que não detecta".
 
 ## Como os limites foram escolhidos
@@ -198,7 +200,7 @@ O que mudei depois de ver erros no conjunto de ajuste foi a estrutura, não os n
 1. O patamar do pico passou da mediana da série inteira para a mediana das 48 h antes do pico. Num viral de cauda longa em série curta, a mediana global caía dentro da cauda e o pico deixava de contar como pico.
 2. As horas dentro de um pico (até voltar a menos de 1,5× o patamar) ou depois de uma queda a zero saem da conta do ritmo diário. Sem isso, a cauda de um viral elevava a madrugada e gerava `inconclusivo` em orgânicos.
 
-Risco de sobreajuste: esses dois ajustes foram feitos olhando a semente 2025. Por isso há um conjunto de controle (semente 31337), que só olhei depois do critério fechado. Ele protege contra ruído específico de uma amostra; não protege contra erro nas minhas receitas, porque usa as mesmas.
+Risco de sobreajuste: esses dois ajustes foram feitos olhando a semente 2025. Por isso há um conjunto de controle (semente 31337), que só olhei depois do critério fechado. Depois disso corrigi bugs apontados em revisão (união de patamares na regularidade, hora indefinida no texto da queda, validação de `start`) e vi as duas sementes a cada rodada de `npm run evaluate`; nenhum limite foi escolhido olhando o controle. Ele protege contra ruído específico de uma amostra; não protege contra erro nas minhas receitas, porque usa as mesmas.
 
 ## O que não detecta
 
@@ -235,7 +237,7 @@ examples/        séries usadas nos exemplos acima
 Escrevi o código e os testes com um assistente de IA (Claude) que eu dirigi: eu defini o critério, os sinais e o formato da resposta, e o assistente produziu a primeira versão do código, do gerador e dos testes. Depois eu revisei e ajustei:
 
 - Troquei o patamar do pico (mediana da série toda para as 48 h anteriores) depois de ver séries virais legítimas, de cauda longa, serem tratadas como "sem pico".
-- Deixei o sinal circadiano sempre no máximo moderado depois de ver que o cenário de audiência em outro fuso (`legit_night_audience`) inverte o ritmo e, se o sinal pudesse ser forte, acusaria as 40 de 40 séries legítimas daquele cenário.
+- Mantive o sinal circadiano limitado a moderado desde o desenho e confirmei no cenário de audiência em outro fuso (`legit_night_audience`) que isso importa: o ritmo invertido aparece nas 40 séries legítimas dele, e se o sinal pudesse ser forte todas seriam acusadas.
 - Rodei o caso de abstenção (meia-vida de 1,2 h) contra os limites de cauda e confirmei que ele cai entre o corte seco (1 h) e o orgânico (5 h), em vez de escolher um número que parecesse bonito.
 - Mantive os falsos positivos de `legit_large_smooth` em vez de afrouxar o limite de regularidade, e coloquei a semente de controle fora do ajuste.
 
