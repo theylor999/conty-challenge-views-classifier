@@ -15,7 +15,7 @@ export interface Dataset {
   samples: Sample[];
 }
 
-/** One independent stream per sample, so adding a scenario never shifts the others. */
+/** One independent stream per sample: appending a scenario never shifts the others (inserting or reordering one does). */
 function sampleSeed(seed: number, scenarioIndex: number, i: number): number {
   return Math.imul(Math.imul(seed, 7919) + scenarioIndex, 1_000_003) + i;
 }

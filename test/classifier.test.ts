@@ -43,6 +43,21 @@ describe("obvious legitimate series", () => {
     expect(spike.explanation).toContain("cauda de pico orgânico");
   });
 
+  it("with a zero baseline, the explained region ends where the burst ends", () => {
+    const views = addAt(new Array<number>(336).fill(0), 80, viralBurst(3000, 2, 12));
+    const spike = signal(classify(series(views)).signals, "spike_shape");
+    expect(spike.evidence["region_end"]).toBeLessThan(100);
+  });
+
+  it("a cut that lands above the old level does not claim a return to it", () => {
+    const views = addAt(week(), 3 * 24 + 21, [20_000, 1_600, 1_600, 1_600]);
+    const r = classify(series(views));
+    const spike = signal(r.signals, "spike_shape");
+    expect(spike.severity).toBe("strong");
+    expect(spike.explanation).toMatch(/em 1 h já estavam abaixo de [\d.]+\/h \(10% do salto sobre o patamar\)/);
+    expect(spike.explanation).not.toContain("patamar anterior");
+  });
+
   it("a creator with a handful of views per hour is not accused of anything", () => {
     const views = diurnalBase(168, 3, 4, 0.3);
     expect(classify(series(views)).label).toBe("legitimo");
@@ -192,6 +207,10 @@ describe("input validation", () => {
 
   it("accepts a start on the hour in a half-hour offset zone", () => {
     expect(() => classify({ start: "2025-03-10T00:00:00+05:30", timezone: "Asia/Kolkata", views: week() })).not.toThrow();
+  });
+
+  it("rejects a timezone that is not a string", () => {
+    expect(bad(series(week(), { timezone: ["UTC"] as never }))).toThrow(/timezone/);
   });
 
   it("limits increments to 90 days and cumulative to 90 days plus the closing snapshot", () => {

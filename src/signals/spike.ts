@@ -62,7 +62,7 @@ export function spikeShape(s: Series, ignore: readonly boolean[]): Signal {
   const hoursAfter = n - 1 - last;
 
   let eventEnd = last + tail;
-  while (eventEnd + 1 < n && x[eventEnd + 1]! >= R.eventEndRatio * base) eventEnd++;
+  while (eventEnd + 1 < n && x[eventEnd + 1]! >= Math.max(R.eventEndRatio * base, 1)) eventEnd++;
   const evidence = {
     peak,
     baseline: base,
@@ -95,7 +95,7 @@ export function spikeShape(s: Series, ignore: readonly boolean[]): Signal {
       value: tail,
       triggered: true,
       severity: "strong",
-      explanation: `Em ${jump}, ficaram nesse nível ${holdText} e voltaram ao patamar anterior em ${tail + 1} h, sem cauda de decaimento.`,
+      explanation: `Em ${jump}, ficaram nesse nível ${holdText} e em ${tail + 1} h já estavam abaixo de ${fmt(floor)}/h (${R.tailShare * 100}% do salto sobre o patamar), sem cauda de decaimento.`,
       evidence,
     };
   }
@@ -126,7 +126,7 @@ export function spikeShape(s: Series, ignore: readonly boolean[]): Signal {
     severity: "none",
     explanation: reachedEnd
       ? `Em ${jump}, e depois decaíram por pelo menos ${fmt(tail)} h, ainda acima do patamar quando a série termina: cauda de pico orgânico, não um corte seco.`
-      : `Em ${jump}, e depois decaíram por ${fmt(tail)} h até o patamar anterior: cauda de pico orgânico.`,
+      : `Em ${jump}, e depois decaíram por ${fmt(tail)} h até ficar abaixo de ${fmt(floor)}/h (${R.tailShare * 100}% do salto sobre o patamar): cauda de pico orgânico.`,
     evidence,
   };
 }

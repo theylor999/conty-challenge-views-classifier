@@ -28,7 +28,7 @@ export function purgeDrop(s: Series): Signal {
   if (worst.percent < R.moderatePercent) {
     return {
       ...common,
-      value: Math.round(worst.percent * 100) / 100,
+      value: worst.percent,
       triggered: false,
       severity: "none",
       explanation: `Maior queda do acumulado: ${fmt1(worst.percent)}% (o limite é ${fmt1(R.moderatePercent)}%).`,
@@ -38,7 +38,7 @@ export function purgeDrop(s: Series): Signal {
   const strong = worst.percent >= R.strongPercent;
   return {
     ...common,
-    value: Math.round(worst.percent * 100) / 100,
+    value: worst.percent,
     triggered: true,
     severity: strong ? "strong" : "moderate",
     explanation: `O acumulado caiu ${fmt1(worst.percent)}% (${fmt(worst.removed)} views) em ${s.when(worst.index + 1)}: a plataforma removeu views que antes contavam.`,

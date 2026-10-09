@@ -48,7 +48,7 @@ export function circadianMismatch(s: Series, skip: readonly boolean[]): Signal {
   const triggered = ratio >= R.moderateRatio;
   return {
     ...common,
-    value: Math.round(ratio * 1000) / 1000,
+    value: ratio,
     triggered,
     severity: triggered ? "moderate" : "none",
     explanation: triggered

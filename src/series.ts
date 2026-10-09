@@ -26,10 +26,7 @@ export interface Series {
   x: number[];
   mode: Mode;
   timezone: string;
-  startMs: number;
   localHour: number[];
-  /** "dd/mm" in the audience's time zone. */
-  localDate: string[];
   purges: PurgeEvent[];
   /** "12/03 às 03h"; also valid for the closing snapshot of a cumulative series (index = x.length). */
   when(i: number): string;
@@ -50,6 +47,7 @@ export function normalize(input: ClassifyInput): Series {
     throw new InputError("invalid_mode", 'mode deve ser "increment" ou "cumulative".');
   }
   const timezone = input.timezone ?? DEFAULT_TIMEZONE;
+  if (typeof timezone !== "string") throw new InputError("invalid_timezone", "timezone deve ser um texto com um nome IANA, ex.: America/Sao_Paulo.");
   let formatter: Intl.DateTimeFormat;
   try {
     formatter = new Intl.DateTimeFormat("en-GB", {
@@ -100,20 +98,13 @@ export function normalize(input: ClassifyInput): Series {
     return { hour: Number(get("hour")), date: `${get("day")}/${get("month")}` };
   };
   const localHour: number[] = [];
-  const localDate: string[] = [];
-  for (let i = 0; i < x.length; i++) {
-    const { hour, date } = local(i);
-    localHour.push(hour);
-    localDate.push(date);
-  }
+  for (let i = 0; i < x.length; i++) localHour.push(local(i).hour);
 
   return {
     x,
     mode,
     timezone,
-    startMs,
     localHour,
-    localDate,
     purges,
     when: (i) => {
       const { hour, date } = local(i);

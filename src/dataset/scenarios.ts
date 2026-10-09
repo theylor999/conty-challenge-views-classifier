@@ -23,7 +23,7 @@ export interface Scenario {
   difficulty: "easy" | "hard";
   detectable: boolean;
   description: string;
-  build(rng: Rng): { hours: number; start: string; mode: Mode; views: number[] };
+  build(rng: Rng): { start: string; mode: Mode; views: number[] };
 }
 
 // Typical weekly-average shape of a Brazilian audience, by local hour (00h..23h).
@@ -135,7 +135,7 @@ const steady = (rng: Rng) => {
 };
 
 function asIncrements(f: Frame, views: number[]) {
-  return { hours: f.hours, start: f.start, mode: "increment" as const, views };
+  return { start: f.start, mode: "increment" as const, views };
 }
 
 /** Running total; at `dropAt` the platform removes `dropShare` of it, so that hour's snapshot is lower than the previous one. */
@@ -146,7 +146,7 @@ function asCumulative(rng: Rng, f: Frame, increments: number[], dropAt: number |
     total = dropAt === i ? Math.round(total * (1 - dropShare)) : total + v;
     views.push(total);
   });
-  return { hours: f.hours, start: f.start, mode: "cumulative" as const, views };
+  return { start: f.start, mode: "cumulative" as const, views };
 }
 
 export const SCENARIOS: Scenario[] = [

@@ -12,7 +12,7 @@ Node 22 ou mais novo.
 npm install
 npm test                          # testes (inclui reprodutibilidade do dataset e das métricas do README)
 npm run typecheck
-PORT=4317 npm run dev             # API em http://localhost:4317 (PORT padrão: 3000)
+PORT=4317 npm run dev             # API em http://localhost:4317 (PORT padrão: 3000); no PowerShell: $env:PORT=4317; npm run dev
 npm run evaluate                  # regenera data/dataset.json, mede, grava data/metrics.json
 npm run evaluate -- --write-readme   # também atualiza o bloco de métricas deste README
 ```
@@ -46,7 +46,7 @@ Resposta: `label`, `reason` (uma ou duas frases com números), `signals` (`id`, 
 
 | sinal | o que mede | moderado | forte |
 | --- | --- | --- | --- |
-| `spike_shape` | A maior hora vale pelo menos 8× o patamar (mediana das 48 h anteriores), 300 views acima dele e 8 desvios robustos (1,4826·MAD). Se vale, olha a cauda: quantas horas seguidas, depois da fase alta (acima de 50% do excesso), o volume segue acima de 10% do excesso. | cauda de 2 a 4 h | cauda de 0 a 1 h (corte seco) |
+| `spike_shape` | A maior hora vale pelo menos 8× o patamar (mediana das até 48 h anteriores; com menos de 12 h antes do pico, a mediana da série inteira), 300 views acima dele e 8 desvios robustos (1,4826·MAD). Se vale, olha a cauda: quantas horas seguidas, depois da fase alta (acima de 50% do excesso), o volume segue acima de 10% do excesso. | cauda de 2 a 4 h | cauda de 0 a 1 h (corte seco) |
 | `mechanical_regularity` | Sequência de janelas de 12 h seguidas, cada uma com coeficiente de variação até 3% e média de 50 views/h ou mais. Dois patamares planos em níveis diferentes não se somam: as janelas que cruzam o degrau reprovam. Audiência real tem ruído e ciclo diário. | 12 h seguidas | 24 h seguidas |
 | `repeated_values` | O mesmo valor exato (20 ou mais) várias horas seguidas. | nunca | 6 h seguidas |
 | `round_numbers` | Horas seguidas em múltiplos exatos de 100 (valor 500 ou mais): entrega em pacotes. Moderado porque há fontes que arredondam. | 6 h seguidas | nunca |
@@ -79,7 +79,7 @@ parcial   ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁�
 
 ## Exemplos reais
 
-Saídas capturadas com o servidor rodando (`PORT=4317 npm run dev`). O `reason` é o texto devolvido, sem edição.
+Saídas capturadas com o servidor rodando (`PORT=4317 npm run dev`). O `reason` é o texto devolvido, sem edição. Os `curl` abaixo usam sintaxe de bash; no Windows, rode no Git Bash ou no WSL.
 
 ```bash
 curl -s -X POST localhost:4317/classify -H 'content-type: application/json' -d @examples/organic-viral.json
@@ -94,7 +94,7 @@ curl -s -X POST localhost:4317/classify -H 'content-type: application/json' -d @
 ```
 ```
 suspeito
-Em 13/03 às 21h, as views saltaram de ~1.027/h para 21.060/h (21,9× o patamar), ficaram nesse nível por 3 h e voltaram ao patamar anterior em 1 h, sem cauda de decaimento.
+Em 13/03 às 21h, as views saltaram de ~1.027/h para 21.060/h (21,9× o patamar), ficaram nesse nível por 3 h e em 1 h já estavam abaixo de 3.002/h (10% do salto sobre o patamar), sem cauda de decaimento.
 ```
 
 Série curta e entrada inválida:
@@ -186,7 +186,7 @@ Leituras honestas dessa tabela:
 
 - O dataset é meu, as 17 receitas são minhas suposições sobre o que é orgânico e o que é comprado. O número mede o critério contra essas suposições, não contra o mundo.
 - A taxa de falso positivo vem só de `legit_large_smooth`: canal grande com ruído de 1% a 4% e pouco ciclo diário, que parece mecânico. Deixei esses casos de propósito e não afrouxei os limites para escondê-los.
-- A prevalência de suspeitas no dataset (41%) é inventada. As taxas condicionais (falso positivo sobre as legítimas, falso negativo sobre as suspeitas) não dependem dela. Precisão (de tudo que foi acusado, quanto era mesmo suspeito) e contagens absolutas dependem, e por isso não são reportadas.
+- A prevalência de suspeitas no dataset (41%) é inventada. As taxas condicionais (falso positivo sobre as legítimas, falso negativo sobre as suspeitas) não dependem dela. Precisão (de tudo que foi acusado, quanto era mesmo suspeito) depende, e por isso não é reportada; as contagens absolutas da tabela valem só para este dataset.
 - Os falsos negativos altos vêm dos dois cenários marcados "fora do alcance": compra que imita um pico orgânico e compra diluída com ciclo diário. Na lista "dentro do alcance" a taxa de captura é a linha correspondente do bloco.
 - A taxa de inconclusivo entre as legítimas é alta porque eu pus de propósito cinco cenários difíceis em que o certo é se abster (outro fuso, fonte que arredonda, vídeo ocultado, pico curto, ajuste do acumulado). Nos cenários fáceis ela só aparece em `legit_sparse`, séries com menos de 100 views no total.
 - Falta no dataset um pico legítimo de corte seco (link fixado na home de um portal por duas horas). Pela forma ele é igual ao pulso comprado; está em "o que não detecta".
