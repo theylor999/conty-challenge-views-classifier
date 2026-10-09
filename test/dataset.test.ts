@@ -46,6 +46,17 @@ describe("dataset shape", () => {
   });
 });
 
+describe("recipes keep their promise", () => {
+  const { samples } = generateDataset(TUNING_SEED);
+
+  it("every purge_drop sample really has a falling snapshot of at least 4%", () => {
+    for (const s of samples.filter((x) => x.scenario === "purge_drop")) {
+      const worst = Math.max(...s.views.slice(1).map((v, i) => (s.views[i]! - v) / s.views[i]!));
+      expect(worst, s.id).toBeGreaterThanOrEqual(0.04 - 0.001);
+    }
+  });
+});
+
 describe("the obvious cases of the dataset", () => {
   const { samples } = generateDataset(TUNING_SEED);
   const labelsOf = (ids: string[]) => samples.filter((s) => ids.includes(s.scenario)).map((s) => classify(s).label);

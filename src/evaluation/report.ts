@@ -39,13 +39,14 @@ export function renderReadmeBlock(tuning: Metrics, holdout: Metrics): string {
     `- Falsos positivos só nos cenários fáceis: ${tuning.easy_false_positives} de ${tuning.easy_legit_total} = ${percent(tuning.easy_false_positives, tuning.easy_legit_total)}.`,
     `- Legítimas que o classificador deixou como inconclusivo: ${tuning.inconclusive_on_legit} de ${tuning.legit_total} = ${percent(tuning.inconclusive_on_legit, tuning.legit_total)}.`,
     `- Suspeitas classificadas como legítimo (falso negativo): ${tuning.false_negatives} de ${tuning.suspicious_total} = ${percent(tuning.false_negatives, tuning.suspicious_total)}.`,
+    `- Suspeitas pegas, contando as fora do alcance: ${tuning.confusion.suspeito.suspeito} de ${tuning.suspicious_total} = ${percent(tuning.confusion.suspeito.suspeito, tuning.suspicious_total)}.`,
     `- Suspeitas dentro do alcance do critério que foram pegas: ${tuning.detectable_caught} de ${tuning.detectable_suspicious_total} = ${percent(tuning.detectable_caught, tuning.detectable_suspicious_total)}.`,
     "",
     confusionTable(tuning),
     "",
     scenarioTable(tuning),
     "",
-    `Conjunto de controle: semente ${holdout.seed}, mesma receita, nunca olhado ao ajustar os limites. ${headline(holdout)}; falsos negativos ${holdout.false_negatives} de ${holdout.suspicious_total} = ${percent(holdout.false_negatives, holdout.suspicious_total)}; suspeitas dentro do alcance pegas ${holdout.detectable_caught} de ${holdout.detectable_suspicious_total} = ${percent(holdout.detectable_caught, holdout.detectable_suspicious_total)}.`,
+    `Conjunto de controle: semente ${holdout.seed}, mesma receita, não usada para escolher nenhum limite. ${headline(holdout)}; falsos negativos ${holdout.false_negatives} de ${holdout.suspicious_total} = ${percent(holdout.false_negatives, holdout.suspicious_total)}; suspeitas dentro do alcance pegas ${holdout.detectable_caught} de ${holdout.detectable_suspicious_total} = ${percent(holdout.detectable_caught, holdout.detectable_suspicious_total)}.`,
   ].join("\n");
 }
 

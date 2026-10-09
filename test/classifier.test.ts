@@ -141,6 +141,32 @@ describe("when it prefers not to accuse", () => {
   });
 });
 
+describe("regressions found in review", () => {
+  it("two flat plateaus at different levels are not one mechanical run", () => {
+    const views = [...diurnalBase(48, 300, 3), ...new Array(12).fill(1000), ...new Array(12).fill(2500), ...diurnalBase(48, 300, 5)];
+    const r = classify(series(views));
+    expect(signal(r.signals, "mechanical_regularity").severity).not.toBe("strong");
+    expect(signal(r.signals, "mechanical_regularity").value).toBeLessThan(24);
+  });
+
+  it("names the hour of a purge in the very last snapshot", () => {
+    const total = cumulative(week(1000));
+    total[total.length - 1] = Math.round(total[total.length - 2]! * 0.8);
+    const r = classify(series(total, { mode: "cumulative" }));
+    expect(signal(r.signals, "purge_drop").severity).toBe("strong");
+    expect(r.reason).not.toContain("undefined");
+    expect(r.reason).toMatch(/\d{2}\/\d{2} às \d{2}h/);
+  });
+
+  it("a long tail that the series cuts short is organic, and the text does not claim a return to baseline", () => {
+    const views = addAt(week(), 145, viralBurst(30_000, 14, 40));
+    const r = classify(series(views));
+    const spike = signal(r.signals, "spike_shape");
+    expect(spike.severity).toBe("none");
+    expect(spike.explanation).toContain("ainda acima do patamar quando a série termina");
+  });
+});
+
 describe("input validation", () => {
   const bad = (input: unknown) => () => classify(input as never);
 
@@ -158,8 +184,21 @@ describe("input validation", () => {
     expect(bad({ start: "2025-03-10", views: week() })).toThrow(/start/);
   });
 
-  it("rejects series longer than 90 days", () => {
-    expect(bad(series(new Array(24 * 90 + 2).fill(10)))).toThrow(/90 dias/);
+  it("rejects impossible dates and starts that are not on the hour", () => {
+    expect(bad({ start: "2025-02-30T00:00:00-03:00", views: week() })).toThrow(/start/);
+    expect(bad({ start: "2025-03-10T00:30:00-03:00", views: week() })).toThrow(/hora cheia/);
+    expect(bad({ start: "2025-03-10T24:00:00-03:00", views: week() })).toThrow(/start/);
+  });
+
+  it("accepts a start on the hour in a half-hour offset zone", () => {
+    expect(() => classify({ start: "2025-03-10T00:00:00+05:30", timezone: "Asia/Kolkata", views: week() })).not.toThrow();
+  });
+
+  it("limits increments to 90 days and cumulative to 90 days plus the closing snapshot", () => {
+    expect(bad(series(new Array(24 * 90 + 1).fill(10)))).toThrow(/90 dias/);
+    expect(() => classify(series(new Array(24 * 90).fill(10)))).not.toThrow();
+    expect(() => classify(series(cumulative(new Array(24 * 90).fill(10)), { mode: "cumulative" }))).not.toThrow();
+    expect(bad(series(cumulative(new Array(24 * 90 + 1).fill(10)), { mode: "cumulative" }))).toThrow(/90 dias/);
   });
 
   it("accepts negative steps in cumulative mode and reports them", () => {

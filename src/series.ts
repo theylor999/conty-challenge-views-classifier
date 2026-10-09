@@ -3,7 +3,7 @@ import type { ClassifyInput, Mode } from "./types.ts";
 
 export const DEFAULT_TIMEZONE = "America/Sao_Paulo";
 const HOUR_MS = 3_600_000;
-const ISO_WITH_OFFSET = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
+const FULL_HOUR_ISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):00(:00(\.0+)?)?(Z|[+-]\d{2}:\d{2})$/;
 
 export class InputError extends Error {
   constructor(
@@ -31,8 +31,17 @@ export interface Series {
   /** "dd/mm" in the audience's time zone. */
   localDate: string[];
   purges: PurgeEvent[];
-  /** "12/03 às 03h" */
+  /** "12/03 às 03h"; also valid for the closing snapshot of a cumulative series (index = x.length). */
   when(i: number): string;
+}
+
+function isFullHourInstant(start: unknown): start is string {
+  if (typeof start !== "string") return false;
+  const m = FULL_HOUR_ISO.exec(start);
+  if (!m || Number.isNaN(Date.parse(start))) return false;
+  const [year, month, day, hour] = [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])];
+  const calendar = new Date(Date.UTC(year, month - 1, day));
+  return hour <= 23 && calendar.getUTCMonth() === month - 1 && calendar.getUTCDate() === day;
 }
 
 export function normalize(input: ClassifyInput): Series {
@@ -53,14 +62,14 @@ export function normalize(input: ClassifyInput): Series {
   } catch {
     throw new InputError("invalid_timezone", `Fuso horário desconhecido: "${timezone}". Use um nome IANA, ex.: America/Sao_Paulo.`);
   }
-  if (typeof input.start !== "string" || !ISO_WITH_OFFSET.test(input.start) || Number.isNaN(Date.parse(input.start))) {
-    throw new InputError("invalid_start", 'start deve ser um instante ISO-8601 com fuso, ex.: "2025-03-10T00:00:00-03:00".');
+  if (!isFullHourInstant(input.start)) {
+    throw new InputError("invalid_start", 'start deve ser uma data e hora cheia ISO-8601 com fuso, ex.: "2025-03-10T00:00:00-03:00".');
   }
   const startMs = Date.parse(input.start);
 
   const raw = input.views;
   if (!Array.isArray(raw)) throw new InputError("invalid_views", "views deve ser uma lista de números.");
-  if (raw.length > RULES.maxHours + 1) {
+  if (raw.length > RULES.maxHours + (mode === "cumulative" ? 1 : 0)) {
     throw new InputError("too_long", `views aceita no máximo ${RULES.maxHours} horas (90 dias).`);
   }
   for (let i = 0; i < raw.length; i++) {
@@ -85,13 +94,17 @@ export function normalize(input: ClassifyInput): Series {
     }
   }
 
+  const local = (i: number) => {
+    const parts = formatter.formatToParts(new Date(startMs + i * HOUR_MS));
+    const get = (type: string) => parts.find((p) => p.type === type)!.value;
+    return { hour: Number(get("hour")), date: `${get("day")}/${get("month")}` };
+  };
   const localHour: number[] = [];
   const localDate: string[] = [];
   for (let i = 0; i < x.length; i++) {
-    const parts = formatter.formatToParts(new Date(startMs + i * HOUR_MS));
-    const get = (type: string) => parts.find((p) => p.type === type)!.value;
-    localHour.push(Number(get("hour")));
-    localDate.push(`${get("day")}/${get("month")}`);
+    const { hour, date } = local(i);
+    localHour.push(hour);
+    localDate.push(date);
   }
 
   return {
@@ -102,6 +115,9 @@ export function normalize(input: ClassifyInput): Series {
     localHour,
     localDate,
     purges,
-    when: (i) => `${localDate[i]} às ${String(localHour[i]).padStart(2, "0")}h`,
+    when: (i) => {
+      const { hour, date } = local(i);
+      return `${date} às ${String(hour).padStart(2, "0")}h`;
+    },
   };
 }

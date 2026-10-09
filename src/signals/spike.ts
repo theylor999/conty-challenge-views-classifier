@@ -124,7 +124,9 @@ export function spikeShape(s: Series, ignore: readonly boolean[]): Signal {
     value: tail,
     triggered: false,
     severity: "none",
-    explanation: `Em ${jump}, e depois decaíram por ${fmt(tail)} h até o patamar anterior: cauda de pico orgânico.`,
+    explanation: reachedEnd
+      ? `Em ${jump}, e depois decaíram por pelo menos ${fmt(tail)} h, ainda acima do patamar quando a série termina: cauda de pico orgânico, não um corte seco.`
+      : `Em ${jump}, e depois decaíram por ${fmt(tail)} h até o patamar anterior: cauda de pico orgânico.`,
     evidence,
   };
 }

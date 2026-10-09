@@ -1,7 +1,8 @@
 export const RULE_VERSION = "2026-10.1";
 
 /**
- * Every threshold of the classifier lives here. They were picked by looking at
+ * Every threshold of the classifier lives here. The numbers were set by reasoning
+ * before any run; only the structure around them changed after looking at
  * data/dataset.json (see README, "Como os limites foram escolhidos").
  */
 export const RULES = {
