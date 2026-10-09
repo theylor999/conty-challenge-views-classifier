@@ -1,0 +1,477 @@
+{
+  "rule_version": "2026-10.1",
+  "tuning": {
+    "seed": 2025,
+    "samples": 680,
+    "legit_total": 400,
+    "suspicious_total": 280,
+    "confusion": {
+      "legitimo": {
+        "legitimo": 246,
+        "suspeito": 3,
+        "inconclusivo": 151
+      },
+      "suspeito": {
+        "legitimo": 82,
+        "suspeito": 181,
+        "inconclusivo": 17
+      }
+    },
+    "false_positives": 3,
+    "false_negatives": 82,
+    "inconclusive_on_legit": 151,
+    "inconclusive_on_suspicious": 17,
+    "easy_legit_total": 160,
+    "easy_false_positives": 0,
+    "detectable_suspicious_total": 200,
+    "detectable_caught": 181,
+    "scenarios": [
+      {
+        "scenario": "legit_steady",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "legit_viral",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "legit_weekend",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "legit_sparse",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 33,
+          "suspeito": 0,
+          "inconclusivo": 7
+        }
+      },
+      {
+        "scenario": "legit_cumulative",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 34,
+          "suspeito": 0,
+          "inconclusivo": 6
+        }
+      },
+      {
+        "scenario": "legit_night_audience",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 0,
+          "inconclusivo": 40
+        }
+      },
+      {
+        "scenario": "legit_unlisted",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 7,
+          "suspeito": 0,
+          "inconclusivo": 33
+        }
+      },
+      {
+        "scenario": "legit_rounded_source",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 0,
+          "inconclusivo": 40
+        }
+      },
+      {
+        "scenario": "legit_large_smooth",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 36,
+          "suspeito": 3,
+          "inconclusivo": 1
+        }
+      },
+      {
+        "scenario": "legit_flash_pulse",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 16,
+          "suspeito": 0,
+          "inconclusivo": 24
+        }
+      },
+      {
+        "scenario": "bought_pulse",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 34,
+          "inconclusivo": 6
+        }
+      },
+      {
+        "scenario": "night_bot",
+        "truth": "suspeito",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 2,
+          "suspeito": 27,
+          "inconclusivo": 11
+        }
+      },
+      {
+        "scenario": "bot_drip",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 40,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "bot_stopped",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 40,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "purge_drop",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 40,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "bought_disguised_tail",
+        "truth": "suspeito",
+        "difficulty": "hard",
+        "detectable": false,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "bought_slow_drip",
+        "truth": "suspeito",
+        "difficulty": "hard",
+        "detectable": false,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      }
+    ],
+    "false_positive_ids": [
+      "legit_large_smooth-17",
+      "legit_large_smooth-29",
+      "legit_large_smooth-37"
+    ]
+  },
+  "holdout": {
+    "seed": 31337,
+    "samples": 680,
+    "legit_total": 400,
+    "suspicious_total": 280,
+    "confusion": {
+      "legitimo": {
+        "legitimo": 242,
+        "suspeito": 3,
+        "inconclusivo": 155
+      },
+      "suspeito": {
+        "legitimo": 84,
+        "suspeito": 181,
+        "inconclusivo": 15
+      }
+    },
+    "false_positives": 3,
+    "false_negatives": 84,
+    "inconclusive_on_legit": 155,
+    "inconclusive_on_suspicious": 15,
+    "easy_legit_total": 160,
+    "easy_false_positives": 0,
+    "detectable_suspicious_total": 200,
+    "detectable_caught": 181,
+    "scenarios": [
+      {
+        "scenario": "legit_steady",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "legit_viral",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "legit_weekend",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "legit_sparse",
+        "truth": "legitimo",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 32,
+          "suspeito": 0,
+          "inconclusivo": 8
+        }
+      },
+      {
+        "scenario": "legit_cumulative",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 33,
+          "suspeito": 0,
+          "inconclusivo": 7
+        }
+      },
+      {
+        "scenario": "legit_night_audience",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 0,
+          "inconclusivo": 40
+        }
+      },
+      {
+        "scenario": "legit_unlisted",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 6,
+          "suspeito": 0,
+          "inconclusivo": 34
+        }
+      },
+      {
+        "scenario": "legit_rounded_source",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 0,
+          "inconclusivo": 40
+        }
+      },
+      {
+        "scenario": "legit_large_smooth",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 33,
+          "suspeito": 3,
+          "inconclusivo": 4
+        }
+      },
+      {
+        "scenario": "legit_flash_pulse",
+        "truth": "legitimo",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 18,
+          "suspeito": 0,
+          "inconclusivo": 22
+        }
+      },
+      {
+        "scenario": "bought_pulse",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 36,
+          "inconclusivo": 4
+        }
+      },
+      {
+        "scenario": "night_bot",
+        "truth": "suspeito",
+        "difficulty": "hard",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 4,
+          "suspeito": 29,
+          "inconclusivo": 7
+        }
+      },
+      {
+        "scenario": "bot_drip",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 36,
+          "inconclusivo": 4
+        }
+      },
+      {
+        "scenario": "bot_stopped",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 40,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "purge_drop",
+        "truth": "suspeito",
+        "difficulty": "easy",
+        "detectable": true,
+        "n": 40,
+        "predicted": {
+          "legitimo": 0,
+          "suspeito": 40,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "bought_disguised_tail",
+        "truth": "suspeito",
+        "difficulty": "hard",
+        "detectable": false,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      },
+      {
+        "scenario": "bought_slow_drip",
+        "truth": "suspeito",
+        "difficulty": "hard",
+        "detectable": false,
+        "n": 40,
+        "predicted": {
+          "legitimo": 40,
+          "suspeito": 0,
+          "inconclusivo": 0
+        }
+      }
+    ],
+    "false_positive_ids": [
+      "legit_large_smooth-01",
+      "legit_large_smooth-12",
+      "legit_large_smooth-14"
+    ]
+  }
+}

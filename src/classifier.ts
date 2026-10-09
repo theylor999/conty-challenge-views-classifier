@@ -66,8 +66,8 @@ function legitimateReason(signals: Signal[]): string {
   const ratio = spike.evidence["ratio"] as number;
   const shape =
     spike.value === null
-      ? `a maior hora (${fmt(peak)} views) é ${fmt1(ratio)}× a mediana de ${fmt(base)}/h`
-      : `o pico de ${fmt(peak)}/h (${fmt1(ratio)}× a mediana) teve cauda de decaimento de ${fmt(spike.value)} h`;
+      ? `a maior hora (${fmt(peak)} views) é ${fmt1(ratio)}× o patamar de ${fmt(base)}/h`
+      : `o pico de ${fmt(peak)}/h (${fmt1(ratio)}× o patamar) teve cauda de decaimento de ${fmt(spike.value)} h`;
   const rhythm = circ.value === null ? "" : `, madrugada em ${fmt1(circ.value * 100)}% da tarde/noite`;
   return `Nenhum dos ${signals.length} sinais passou do limite: ${shape}${rhythm} e não há trechos mecânicos nem quedas bruscas.`;
 }

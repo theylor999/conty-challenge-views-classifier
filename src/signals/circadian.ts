@@ -13,11 +13,12 @@ const pct = (r: number) => fmt1(r * 100);
  * It only fires when the whole series lacks a night/day pattern.
  * Never strong: an audience in another time zone looks the same.
  */
-export function circadianMismatch(s: Series): Signal {
+export function circadianMismatch(s: Series, skip: readonly boolean[]): Signal {
   const dead: number[] = [];
   const active: number[] = [];
   let total = 0;
   s.x.forEach((v, i) => {
+    if (skip[i]) return;
     total += v;
     const h = s.localHour[i]!;
     if ((R.deadHours as readonly number[]).includes(h)) dead.push(v);
@@ -33,13 +34,13 @@ export function circadianMismatch(s: Series): Signal {
   };
   const activeMedian = median(active);
 
-  if (total < R.minTotalViews || activeMedian < R.minActiveMedian) {
+  if (total < R.minTotalViews || activeMedian < R.minActiveMedian || dead.length < R.minDeadSamples || active.length < R.minActiveSamples) {
     return {
       ...common,
       value: null,
       triggered: false,
       severity: "none",
-      explanation: `Volume típico de ${fmt1(activeMedian)} views/h na tarde/noite é pequeno demais para medir o ritmo diário (mínimo ${R.minActiveMedian}/h).`,
+      explanation: `Há pouca informação para medir o ritmo diário: volume típico de ${fmt1(activeMedian)} views/h na tarde/noite (mínimo ${R.minActiveMedian}/h) e ${dead.length} horas de madrugada (mínimo ${R.minDeadSamples}), sem contar picos e quedas já explicados.`,
       evidence: { active_median: activeMedian },
     };
   }

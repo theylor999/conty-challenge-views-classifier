@@ -87,6 +87,6 @@ export function dropToZero(s: Series): Signal {
     triggered: true,
     severity: "moderate",
     explanation: `Em ${s.when(found.at)} as views caíram de ~${fmt(found.prior)}/h para quase zero e ficaram assim por ${found.zeros} h, sem cauda de decaimento, o que também acontece quando o vídeo é ocultado ou a coleta falha.`,
-    evidence: { prior_median: found.prior, at_index: found.at },
+    evidence: { prior_median: found.prior, region_start: found.at, region_end: found.at + found.zeros - 1 },
   };
 }

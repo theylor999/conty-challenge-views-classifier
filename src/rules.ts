@@ -10,7 +10,10 @@ export const RULES = {
   maxHours: 24 * 90,
 
   spike: {
-    /** Highest hour must be at least this many times the series median... */
+    /** The baseline is the median of this many hours before the peak (or of the whole series if the peak is earlier than minHoursBefore). */
+    baselineHours: 48,
+    minHoursBefore: 12,
+    /** Highest hour must be at least this many times the baseline... */
     riseRatio: 8,
     /** ...at least this many views above it... */
     minExcess: 300,
@@ -24,6 +27,8 @@ export const RULES = {
     cliffMaxTailHours: 1,
     /** Tail of this many hours or fewer, but more than a cliff = partial (moderate). */
     partialMaxTailHours: 4,
+    /** For the daily-rhythm signal, an event lasts until the series is back under this many times the median. */
+    eventEndRatio: 1.5,
     /** Hours after the high phase needed to judge the tail. */
     minHoursAfter: 3,
   },
@@ -52,6 +57,8 @@ export const RULES = {
     activeHours: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
     minActiveMedian: 20,
     minTotalViews: 2000,
+    minDeadSamples: 8,
+    minActiveSamples: 24,
     moderateRatio: 0.8,
   },
 
