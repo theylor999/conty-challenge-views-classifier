@@ -75,8 +75,8 @@ export function spikeShape(s: Series, ignore: readonly boolean[]): Signal {
     region_start: first,
     region_end: eventEnd,
   };
-  const night = RULES.circadian.deadHours.some((h) => h === s.localHour[p]) ? " (madrugada)" : "";
-  const jump = `${s.when(p)}${night} as views saltaram de ~${fmt(before)}/h para ${fmt(level)}/h (${fmt1(ratio)}× o patamar)`;
+  const night = RULES.circadian.deadHours.some((h) => h === s.localHour[first]) ? " (madrugada)" : "";
+  const jump = `${s.when(first)}${night}, as views saltaram de ~${fmt(before)}/h para ${fmt(level)}/h (${fmt1(ratio)}× o patamar)`;
   const holdText = hold === 1 ? "por 1 h" : `por ${fmt(hold)} h`;
 
   if (hoursAfter < R.minHoursAfter) {
