@@ -234,7 +234,7 @@ examples/        séries usadas nos exemplos acima
 
 ## Uso de IA
 
-O código e os testes foram escritos com um assistente de IA (Claude), que eu dirigi: eu defini o critério, os sinais e o formato da resposta, e o assistente produziu a primeira versão do código, do gerador e dos testes. Depois eu revisei e ajustei:
+Usei mais de um modelo de IA, cada um num papel: Claude Opus 5.5 para planejar, dividir o trabalho e conferir as entregas; Claude Sonnet 5.5 para escrever o código e os testes; e GPT-6.1 Sol para uma revisão independente contra o enunciado, cujos achados válidos entraram como correção. Eu dirigi o processo e defini o critério, os sinais e o formato da resposta; os modelos produziram a primeira versão do código, do gerador e dos testes. Depois eu revisei e ajustei:
 
 - Troquei o patamar do pico (mediana da série toda para as 48 h anteriores) depois de ver séries virais legítimas, de cauda longa, serem tratadas como "sem pico".
 - Mantive o sinal circadiano limitado a moderado desde o desenho e confirmei no cenário de audiência em outro fuso (`legit_night_audience`) que isso importa: o ritmo invertido aparece nas 40 séries legítimas dele, e se o sinal pudesse ser forte todas seriam acusadas.
